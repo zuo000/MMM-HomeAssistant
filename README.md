@@ -21,3 +21,4 @@ HomeAssistant module for MagicMirror2
   }
 },
 ```
+## The MIT License (MIT)
