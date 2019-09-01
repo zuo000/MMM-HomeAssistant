@@ -1,6 +1,8 @@
 # MMM-HomeAssistant
 HomeAssistant frontend module for [MagicMirror²](https://github.com/MichMich/MagicMirror).
 
+![ScreenShot](screenshot.jpg?raw=true "ScreenShot")
+
 ## Installation
 
 1. Navigate into your MagicMirror `modules` folder and execute<br>
