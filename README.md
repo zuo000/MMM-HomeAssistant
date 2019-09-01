@@ -1,5 +1,5 @@
 # MMM-HomeAssistant
-HomeAssistant module for MagicMirror2
+HomeAssistant module for [MagicMirror²](https://github.com/MichMich/MagicMirror).
 
 ## Installation
 
