@@ -112,6 +112,7 @@ Module.register("MMM-HomeAssistant", {
       });
   },
 
+  //gate, motion sensor
   makeBinarySensorGroup: function(equip) {
     var self = this;
     var group = document.createElement("div");
@@ -142,7 +143,7 @@ Module.register("MMM-HomeAssistant", {
         break;
     }
 
-    stateText.innerText= hourStr + ":" + minuteStr + "\n" + state;
+    stateText.innerText= (dattt.getMonth() + 1).toString() + "/" + dattt.getDate() + " " + hourStr + ":" + minuteStr + "\n" + state;
     group.appendChild(stateText);
     /*
     /*<div>
@@ -158,6 +159,7 @@ Module.register("MMM-HomeAssistant", {
     return group;
   },
 
+  //light sensor
   makeSensorGroup: function(equip) {
     var self = this;
     var group = document.createElement("div");
