@@ -21,7 +21,11 @@ module.exports = NodeHelper.create({
 
   getStates: function(payload) {
     request({
-      url: payload.baseUrl + "/api/states?api_password=" + payload.apiPassword,
+      url: payload.baseUrl + "/api/states",
+      headers: {
+        "Authorization": "Bearer " + payload.accessToken,
+        "Content-Type": "application/json"
+      },
       method: 'GET'
     }, (error, response, body) => {
       if (!error && response.statusCode == 200) {
@@ -34,14 +38,17 @@ module.exports = NodeHelper.create({
   },
 
   postState: function(payload) {
-    var url = payload.baseUrl + "/api/services/" + payload.equipType + "/turn_" + payload.state + "?api_password=" + payload.apiPassword;
+    var url = payload.baseUrl + "/api/services/" + payload.equipType + "/turn_" + payload.state;
     var requestData = {"entity_id": payload.entityId};
 
     request({
       url: url,
       method: 'POST',
       json: true,
-      headers: {"content-type": "application/json"},
+      headers: {
+        "Authorization": "Bearer " + payload.accessToken,
+        "content-type": "application/json"
+      },
       body: requestData
     }, (error, response, body) => {
       if (!error && response.statusCode == 200) {

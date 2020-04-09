@@ -2,7 +2,7 @@ Module.register("MMM-HomeAssistant", {
   defaults: {
     host: "",
     port: 8123,
-    apiPassword: "",
+    accessToken: "",
     updateInterval: 5*1000,
   },
 
@@ -31,7 +31,7 @@ Module.register("MMM-HomeAssistant", {
   getStates: function() {
     this.sendSocketNotification('HA_GET_STATES', {
       baseUrl: this.url,
-      apiPassword: this.config.apiPassword,
+      accessToken: this.config.accessToken,
       });
   },
 
@@ -105,7 +105,7 @@ Module.register("MMM-HomeAssistant", {
   postState: function(entityId, equipType, state) {
     this.sendSocketNotification('HA_POST_STATE', {
       baseUrl: this.url,
-      apiPassword: this.config.apiPassword,
+      accessToken: this.config.accessToken,
       entityId: entityId,
       equipType: equipType,
       state: state
@@ -173,7 +173,10 @@ Module.register("MMM-HomeAssistant", {
 
     var stateText = document.createElement("div");
     stateText.className = "sensor_state_text";
-    var stateInt = equip.state.substring(0, equip.state.indexOf("."));
+    var stateInt = equip.state;
+    if (equip.state.indexOf(".") > 0) {
+     stateInt = equip.state.substring(0, equip.state.indexOf("."));
+    }
     stateText.innerText= stateInt + " " + equip.attributes.unit_of_measurement;
     group.appendChild(stateText);
     /*

@@ -18,7 +18,7 @@ HomeAssistant frontend module for [MagicMirror²](https://github.com/MichMich/Ma
   config: {
     host: "YOUR_HA_IP or DOMAIN",
     port: 8123, // your HA port, 8123 by default.
-    apiPassword: "SUPER SECRET!!!",
+    accessToken: "SUPER SECRET!!!",
     updateInterval: 5*1000
   }
 },
