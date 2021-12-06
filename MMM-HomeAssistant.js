@@ -4,6 +4,7 @@ Module.register("MMM-HomeAssistant", {
     port: 8123,
     accessToken: "",
     updateInterval: 5*1000,
+    entities: [],
   },
 
   getStyles: function() {
@@ -22,6 +23,7 @@ Module.register("MMM-HomeAssistant", {
     this.url = "http://" + this.config.host + ":" + this.config.port.toString();
     this.equipData = null;
     this.loaded = false;
+    this.whitelist = this.config.entities;
     this.stateTimer = setInterval(() => {
       this.getStates();
     }, this.config.updateInterval);
@@ -66,38 +68,86 @@ Module.register("MMM-HomeAssistant", {
 
     var wrapper = document.createElement("div");
     wrapper.className = "wrapper"
-
-    for (let equip of this.equipData) {
-      if (equip.entity_id.startsWith("light.")) {
-        console.log(this.name + " get equipment:" + equip.attributes.friendly_name + ", id: ", equip.entity_id);
-        var group = this.makeLightGroup(equip.entity_id, equip.attributes.friendly_name, equip.state);
-        wrapper.appendChild(group);
-      }
+    if (this.whitelist.length !== 0){
+    	for (let item of this.whitelist){
+	  var res = this.equipData.find(element => element.entity_id == item);
+	  if (res){
+    	  	console.log(this.name + " get equipment:" + res.attributes.friendly_name + ", id: ", res.entity_id);
+		switch(item.split('.')[0]){
+		  case "light":
+    	  	    var group = this.makeLightGroup(res.entity_id, res.attributes.friendly_name, res.state);
+		    break;
+		  case "switch":
+    	  	    var group = this.makeSwitchGroup(res.entity_id, res.attributes.friendly_name, res.state);
+		    break;
+		  case "sensor":
+    	  	    var group = this.makeSensorGroup(res);
+		    break;
+		  case "binary":
+     	  	    var group = this.makeBinarySensorGroup(res);
+		    break;
+		  default:
+		    console.log("no category found: " + item);
+		  break;
+		}
+	       if (group){	
+    	         wrapper.appendChild(group);
+	       }
+	  }
+	}
+    } else {
+    	for (let res of this.equipData) {
+	switch(res.entity_id.split('.')[0]){
+	  case "light":
+    	    var group = this.makeLightGroup(res.entity_id, res.attributes.friendly_name, res.state);
+	    break;
+	  case "switch":
+    	    var group = this.makeSwitchGroup(res.entity_id, res.attributes.friendly_name, res.state);
+	    break;
+	  case "sensor":
+    	    var group = this.makeSensorGroup(res);
+	    break;
+	  case "binary":
+     	    var group = this.makeBinarySensorGroup(res);
+	    break;
+	  default:
+	    console.log("no category found: " + res.entity_id);
+	  break;
+	}
+	if (group){wrapper.appendChild(group);}
+	}
     }
 
-    for (let equip of this.equipData) {
-      if (equip.entity_id.startsWith("switch.")) {
-        console.log(this.name + " get equipment:" + equip.attributes.friendly_name + ", id: ", equip.entity_id);
-        var group = this.makeSwitchGroup(equip.entity_id, equip.attributes.friendly_name, equip.state);
-        wrapper.appendChild(group);
-      }
-    }
+    // for (let equip of this.equipData) {
+    // 	if (this.whitelist.indexOf(equip.entity_id) !== -1 || this.whitelist.length == 0){
+    // 	  	if (equip.entity_id.startsWith("light.")) {
+    // 	  	  console.log(this.name + " get equipment:" + equip.attributes.friendly_name + ", id: ", equip.entity_id);
+    // 	  	  var group = this.makeLightGroup(equip.entity_id, equip.attributes.friendly_name, equip.state);
+    // 	  	  wrapper.appendChild(group);
+    // 	  	}
+    // 	  	if (equip.entity_id.startsWith("switch.")) {
+    // 	  	  console.log(this.name + " get equipment:" + equip.attributes.friendly_name + ", id: ", equip.entity_id);
+    // 	  	  var group = this.makeSwitchGroup(equip.entity_id, equip.attributes.friendly_name, equip.state);
+    // 	  	  wrapper.appendChild(group);
+    // 	  	}
+    // 	   	if (equip.entity_id.startsWith("sensor.")) {
+    // 	   	  console.log(this.name + " get equipment:" + equip.attributes.friendly_name + ", id: ", equip.entity_id);
+    // 	   	  var group = this.makeSensorGroup(equip);
+    // 	   	  wrapper.appendChild(group);
+    // 	   	}
+    //     	if (equip.entity_id.startsWith("binary_sensor.")) {
+    //     	  console.log(this.name + " get equipment:" + equip.attributes.friendly_name + ", id: ", equip.entity_id);
+    //  	          var group = this.makeBinarySensorGroup(equip);
+    //  	          wrapper.appendChild(group);
+    //  	        }
+    // 	}
+    // }
 
-    for (let equip of this.equipData) {
-      if (equip.entity_id.startsWith("binary_sensor.")) {
-        console.log(this.name + " get equipment:" + equip.attributes.friendly_name + ", id: ", equip.entity_id);
-        var group = this.makeBinarySensorGroup(equip);
-        wrapper.appendChild(group);
-      }
-    }
+   //  for (let equip of this.equipData) {
+   //  }
 
-    for (let equip of this.equipData) {
-      if (equip.entity_id.startsWith("sensor.")) {
-        console.log(this.name + " get equipment:" + equip.attributes.friendly_name + ", id: ", equip.entity_id);
-        var group = this.makeSensorGroup(equip);
-        wrapper.appendChild(group);
-      }
-    }
+   //  for (let equip of this.equipData) {
+   //  }
 
     return wrapper;
   },
@@ -110,6 +160,7 @@ Module.register("MMM-HomeAssistant", {
       equipType: equipType,
       state: state
       });
+	console.log(entityId, equipType, state);
   },
 
   //gate, motion sensor
@@ -145,17 +196,6 @@ Module.register("MMM-HomeAssistant", {
 
     stateText.innerText= (dattt.getMonth() + 1).toString() + "/" + dattt.getDate() + " " + hourStr + ":" + minuteStr + "\n" + state;
     group.appendChild(stateText);
-    /*
-    /*<div>
-        <div class="group">
-          <div class="text">
-          name
-          </div >
-          <div class="sensor_state_text" >
-          state
-          </label>
-        </div>
-      </div>*/
     return group;
   },
 
@@ -179,17 +219,6 @@ Module.register("MMM-HomeAssistant", {
     }
     stateText.innerText= stateInt + " " + equip.attributes.unit_of_measurement;
     group.appendChild(stateText);
-    /*
-    /*<div>
-        <div class="group">
-          <div class="text">
-          name
-          </div >
-          <div class="sensor_state_text" >
-          state
-          </label>
-        </div>
-      </div>*/
     return group;
   },
 
@@ -205,17 +234,19 @@ Module.register("MMM-HomeAssistant", {
     var group = document.createElement("div");
     group.className = "group"
 
-    var text = document.createElement("div");
-    text.className = "text";
-    text.innerText= name;
-    group.appendChild(text);
-
     var button = document.createElement("label");
     button.className = "switch";
+    button.setAttribute("for", entityId.replace(".","-").replace("_","-"));
+
+    var text = document.createElement("div");
+    text.className = "switchtext";
+    text.innerText = name;
+    button.appendChild(text);
 
     var input = document.createElement("input");
-    input.id = "cb";
+    input.id = entityId.replace(".","-").replace("_","-");
     input.setAttribute("type", "checkbox");
+    input.setAttribute("name", entityId.replace(".","-").replace("_","-"));
     if (state == "on") {
       input.checked = true;
     }
@@ -232,12 +263,7 @@ Module.register("MMM-HomeAssistant", {
             self.postState(entityId, type, "off");
           }
       });
-    button.appendChild(input);
-
-    var round = document.createElement("div");
-    round.className = "slider round";
-    button.appendChild(round);
-
+    group.appendChild(input);
     group.appendChild(button);
     /*
     /*<div>

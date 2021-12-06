@@ -1,58 +1,79 @@
-.wrapper {
-    margin-bottom: 20px;
+.wrapper{
+    display: flex;
+    justify-content:space-between;
+    flex-wrap: wrap;
 }
 .group{
-    float: left;
-    width: 240px;
-    height: 55px;
-    border:2px solid #aaa;
+    width: 8em;
+    height: 2em;
+    margin: 0.2em;
+    vertical-align: middle;
+    text-align:center;
+    position: relative;
+    border:solid 2px grey;
     border-radius: 12px;
-    margin-left: 44px;
-    margin-top: 10px;
-    vertical-align: center;
-}
-.text{
-    float: left;
-    width: 170px;
-    height: 55px;
-    font-size: 25px;
-    margin-top: 3px;
-    font-family: "Microsoft Yahei";
+    flex-grow:1;
+    flex-shrink:1;
+    overflow: hidden;
+    white-space: nowrap;
 }
 .sensor_state_text{
-    float: right;
-    margin-top: 2px;
-    width: 70px;
-    height: 15px;
-    position: relative;
-    display: inline-block;
-    font-size: 17px;
+    margin-top: -0.3em;
+    font-size: 1em;
+    width:100%;
+    background-color: rgba(255,255,255,0.05);
+    text-overflow: fade;
+}
+.text{
+    font-size: 0.5em;
+    text-overflow: fade;
 }
 .binary_sensor_state_text{
-    float: right;
-    margin-top: 6px;
-    width: 70px;
-    height: 15px;
-    position: relative;
-    display: inline-block;
-    font-size: 14px;
-    line-height: normal;
+    margin-top: -0.3em;
+    font-size: 1em;
+    width:100%;
+    font-size: 1.3em;
+    text-overflow: fade;
 }
 .switch{
-    float: right;
-    margin-top: 19px;
-    margin-right: 22px;
-    width: 35px;
-    height: 15px;
+    font-size: 1em;
+    position: absolute;
+    text-overflow: fade;
+}
+
+label {
+    top: 50%;
+    width: 100%;
+    height: 100%;
     position: relative;
-    display: inline-block;
+    transform: translate(-50%,-50%);
+    border:solid 2px #111;
+    border-radius: 12px;
 }
-input{
-    display:none ;
+
+.switchtext  {
+    width: 100%;
+    top: calc(50% + 4px);
+    left: calc(50% + 4px);
+    height: 100%;
+    text-align:center;
+    position: absolute;
+    transform: translate(-50%,-50%);
+    text-overflow: fade;
 }
+input[type="checkbox"]{
+   display:none;
+}
+input:checked + label {
+   border:solid 2px lightblue;
+   border-radius: 12px;
+   background-color: rgba(200,255,255,0.3);
+   color: lightblue;
+}
+
 .round{
-    border-radius: 10px;
 }
+/*
 .slider{
     background: #ccc;
     position: absolute;
@@ -75,10 +96,4 @@ input{
     left: -1px;
     transition: all .4s;
 }
-
-input:checked+.slider{
-    background: #2196F3;
-}
-input:checked+.slider:after{
-    transform: translateX(23px);
-}
+*/
